@@ -12,6 +12,10 @@ app.get("/", (req, res) => {
   res.json({ msg: "welcome to home Page" });
 });
 
+app.use("*", (req, res) => {
+  res.json({ msg: `wrong route ${req.route}` });
+});
+
 app.listen(process.env.PORT || 3000, () => {
   console.log(`server started`);
 });
