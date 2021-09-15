@@ -10,6 +10,6 @@ app.get("/", (req, res) => {
   res.json({ msg: "welcome to home Page" });
 });
 
-app.listen(process.env.PORT || port, () => {
-  console.log(`server started ${port}`);
+app.listen(process.env.PORT || 3000, () => {
+  console.log(`server started`);
 });
