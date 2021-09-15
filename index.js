@@ -12,8 +12,9 @@ app.get("/", (req, res) => {
   res.json({ msg: "welcome to home Page" });
 });
 
-app.use("*", (req, res) => {
+app.use("*", (req, res, next) => {
   res.json({ msg: `wrong route ${req.path}` });
+  next();
 });
 
 app.listen(process.env.PORT || 3000, () => {
