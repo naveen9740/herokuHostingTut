@@ -1,8 +1,10 @@
 const express = require("express");
 const products = require("./Pages/products");
 const wishList = require("./Pages/wishList");
+const cors = require("cors");
 
 const app = express();
+app.use(cors());
 app.use("/products", products);
 app.use("/wishList", wishList);
 
