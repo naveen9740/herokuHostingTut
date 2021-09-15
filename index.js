@@ -12,8 +12,9 @@ app.get("/", (req, res) => {
   res.json({ msg: "welcome to home Page" });
 });
 
-app.use("*", (req, res, next) => {
-  res.json({ msg: `wrong route ${req.path}` });
+app.use("/:path", (req, res, next) => {
+  const { path } = req.params;
+  res.json({ msg: `wrong route ${path}` });
   next();
 });
 
