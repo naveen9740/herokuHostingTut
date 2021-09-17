@@ -1,23 +1,36 @@
 const express = require("express");
+const bodyParser = require("body-parser");
+const database = require("../dataBase/mongoose");
+const productModel = require("../dataBase/Models/model1");
 const products = express.Router();
-// const bodyParser = require("body-parser");
 
-const productsList = [
-  { name: "naveen", price: 2345, id: 1 },
-  { name: "kamath", price: 3412, id: 2 },
-];
-
+// const productsList = [
+//   { name: "naveen", price: 2345, id: 1 },
+//   { name: "kamath", price: 3412, id: 2 },
+// ];
+database();
 products.use(express.json());
 
 products
   .route("/")
-  .get((req, res) => {
-    res.json({ productsList });
+  .get(async (req, res) => {
+    try {
+      const products = await productModel.find({});
+      res.json({ products });
+    } catch (error) {
+      res.status(404).json({ msg: error.message });
+    }
   })
-  .post((req, res) => {
-    const newProduct = req.body;
-    productsList.push(newProduct);
-    res.json({ newProduct });
+  .post(async (req, res) => {
+    try {
+      const newProd = req.body;
+      const Watch = new productModel(newProd);
+      const response = await Watch.save();
+      console.log(response);
+      res.json({ msg: "product has benn added", response });
+    } catch (error) {
+      console.log({ error });
+    }
   });
 
 products
