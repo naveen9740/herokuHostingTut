@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const database = require("../dataBase/mongoose");
 const productModel = require("../dataBase/Models/model1");
+const { extend } = require("lodash");
 const products = express.Router();
 
 // const productsList = [
@@ -22,38 +23,44 @@ products
     }
   })
   .post(async (req, res) => {
-    try {
-      const newProd = req.body;
-      const Watch = new productModel(newProd);
-      const response = await Watch.save();
-      console.log(response);
-      res.json({ msg: "product has benn added", response });
-    } catch (error) {
-      console.log({ error });
-    }
+    const update = req.body;
+    let newProduct = new productModel(update);
+    const response = await newProduct.save();
+    res.json({ msg: "product added to db", newProduct });
   });
 
-products
-  .route("/:id")
-  .get((req, res) => {
-    const { id } = req.params;
-    const prod = productsList.find((product) => product.id == id);
-    res.json({ id: parseInt(id), prod });
-  })
-  .post((req, res) => {
-    const update = req.body;
-    const { id } = req.params;
-    productsList.forEach((product) => {
-      if (product.id == id) {
-        Object.keys(update).forEach((key) => {
-          if (key in product) {
-            product[key] = update[key];
-            return res.json({ productsList });
-          }
-        });
-      }
+products.param("productId", async (req, res, next, productId) => {
+  try {
+    const product = await productModel.findById(productId);
+    req.product = product;
+    next();
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      msg: "cannot get the product due to bad productId",
+      error: error.message,
     });
-    return res.status(404).json({ msg: `Incorrect id ${id}` });
+  }
+});
+
+products
+  .route("/:productId")
+  .get((req, res) => {
+    const { product } = req;
+    res.json({ success: true, product });
+  })
+  .post(async (req, res) => {
+    const update = req.body;
+    let { product } = req;
+    product = extend(product, update);
+    product = await product.save();
+    res.json({ msg: "product updated", product });
+  })
+  .delete(async (req, res) => {
+    let { product } = req;
+    product = await product.remove();
+    let allProducts = await productModel.find({});
+    res.json({ msg: "product deleted", product });
   });
 
 module.exports = products;
