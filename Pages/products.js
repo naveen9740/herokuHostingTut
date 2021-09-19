@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const database = require("../dataBase/mongoose");
 const productModel = require("../dataBase/Models/model1");
 const { extend } = require("lodash");
+const assert = require("assert");
 const products = express.Router();
 
 // const productsList = [
@@ -23,21 +24,30 @@ products
     }
   })
   .post(async (req, res) => {
-    const update = req.body;
-    let newProduct = new productModel(update);
-    const response = await newProduct.save();
-    res.json({ msg: "product added to db", newProduct });
+    try {
+      const update = req.body;
+      let newProduct = new productModel(update);
+      const response = await newProduct.save();
+      res.json({ msg: "product added to db", newProduct });
+    } catch (error) {
+      res.json({ success: false, error: error.message });
+    }
   });
 
 products.param("productId", async (req, res, next, productId) => {
   try {
     const product = await productModel.findById(productId);
+    if (!product) {
+      return res.json({
+        msg: "error while retrieving product, Product has been deleted",
+      });
+    }
     req.product = product;
     next();
   } catch (error) {
     res.status(404).json({
       success: false,
-      msg: "cannot get the product due to bad productId",
+      msg: "product not found",
       error: error.message,
     });
   }

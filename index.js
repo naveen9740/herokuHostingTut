@@ -4,7 +4,7 @@ const wishList = require("./Pages/wishList");
 const routeHandler = require("./Middlewares/routeHandler");
 const errorHandler = require("./Middlewares/errorHandler");
 const cors = require("cors");
-
+// 1:15:00
 const app = express();
 app.use(cors());
 app.use("/products", products);
@@ -19,6 +19,6 @@ app.use(errorHandler);
 app.use(routeHandler);
 
 // process.env.PORT ||
-app.listen(process.env.PORT || 3000, () => {
+app.listen(3000, () => {
   console.log(`server started`);
 });
