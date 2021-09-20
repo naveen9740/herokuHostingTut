@@ -20,7 +20,7 @@ products
       const products = await productModel.find({});
       res.json({ products });
     } catch (error) {
-      res.status(404).json({ msg: error.message });
+      res.status(404).json({ msg: error.message, error });
     }
   })
   .post(async (req, res) => {
@@ -30,7 +30,10 @@ products
       const response = await newProduct.save();
       res.json({ msg: "product added to db", newProduct });
     } catch (error) {
-      res.json({ success: false, error: error.message });
+      // if (error.code == 11000) {
+      //   return res.json({ msg: "name should be unique" });
+      // }
+      res.json({ success: false, error: error.message, error });
     }
   });
 
