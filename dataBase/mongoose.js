@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const database = async () => {
   try {
     const response = await mongoose.connect(
-      "mongodb+srv://NaveenKamath:naveen%40coursera@cluster0.hrd9f.mongodb.net/inventory?retryWrites=true&w=majority"
+      "mongodb+srv://NaveenKamath:<password>@cluster0.hrd9f.mongodb.net/<databaseName>?retryWrites=true&w=majority"
     );
     console.log("mongoose connected");
   } catch (error) {
